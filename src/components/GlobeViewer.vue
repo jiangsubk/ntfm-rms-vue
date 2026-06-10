@@ -7,8 +7,9 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, watch, inject, provide } from 'vue'
-import * as Cesium from 'cesium'
 import { getCompositeAirwayCoordinates } from '../utils/airwaySearch.js'
+
+const Cesium = window.Cesium
 
 const GIS_BASE = '/gisData/lowAltitude/'
 const PLAN_ROUTE_ALT = 3500
@@ -315,6 +316,10 @@ watch(() => layerVisible.value, () => {
 }, { deep: true })
 
 onMounted(async () => {
+  if (!Cesium) {
+    console.error('[GlobeViewer] Cesium 未加载，请运行 npm run copy-cesium 或将 Cesium 静态资源放入 public/cesium')
+    return
+  }
   viewer = new Cesium.Viewer(cesiumContainer.value, {
     animation: false, timeline: false, baseLayerPicker: false,
     fullscreenButton: false, vrButton: false, homeButton: false,
